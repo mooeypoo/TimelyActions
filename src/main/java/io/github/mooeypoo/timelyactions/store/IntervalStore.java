@@ -7,6 +7,7 @@ import java.util.Set;
 import org.bukkit.entity.Player;
 
 import io.github.mooeypoo.timelyactions.store.items.IntervalDataItem;
+import io.github.mooeypoo.timelyactions.utils.ValidityHelper;
 
 public class IntervalStore {
 	private HashMap<String, IntervalDataItem> store = new HashMap<String, IntervalDataItem>();
@@ -51,7 +52,7 @@ public class IntervalStore {
 		
 		return data.getEveryMinutes();
 	}
-	
+
 	public String getIntervalUserMessage(String name) {
 		IntervalDataItem data = this.store.get(name);
 		if (data == null) {
@@ -60,12 +61,13 @@ public class IntervalStore {
 		
 		return data.getMessageToUser();
 	}
-	
+
 	public Boolean doesPlayerHaveIntervalPermission(Player player, String name) {
 		IntervalDataItem data = this.store.get(name);
-		if (data != null) {
-			return player.hasPermission(data.getPermission());
+		
+		if (data == null || ValidityHelper.isStringEmpty(data.getPermission())) {
+			return true;
 		}
-		return true;
+		return player.hasPermission(data.getPermission());
 	}
 }

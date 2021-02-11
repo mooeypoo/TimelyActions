@@ -79,7 +79,7 @@
         </executions>
         <configuration>
           <excludes>
-            <exclude>io/github/mooeypoo/timelyactions/configs/**/</exclude>
+            <exclude>io/github/mooeypoo/timelyactions/config/**/</exclude>
           </excludes>
         </configuration>
       </plugin>
