@@ -9,11 +9,6 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-//import java.time.LocalDate;
-//import java.time.Month;
-//import java.time.format.TextStyle;
-//import java.util.Locale;
-
 import org.bukkit.plugin.java.JavaPlugin;
 
 
@@ -22,11 +17,6 @@ public class LogDatabase extends Database {
 	public LogDatabase(JavaPlugin plugin) {
 		super(plugin);
 		this.setFilename("logs.db");
-//		Month month = LocalDate.now().getMonth();
-//		this.setFilename(String.format(
-//			"logs-%s.db",
-//			month.getDisplayName(TextStyle.FULL, Locale.US)
-//		));
 	}
 
 	public void initialize() {
@@ -39,7 +29,7 @@ public class LogDatabase extends Database {
 			// Create unique index
 			"CREATE INDEX IF NOT EXISTS "
 			+ "idx_player "
-			+ "ON player_records(player)"
+			+ "ON logs(player)"
 		);
 	}
 
@@ -53,7 +43,7 @@ public class LogDatabase extends Database {
 			statement.setQueryTimeout(30);  // set timeout to 30 seconds
 
 			// Use sqlite's REPLACE
-			sql = "REPLACE INTO logs(player, interval, run_time) VALUES(?, ?, ?)";
+			sql = "INSERT INTO logs(player, interval, run_time) VALUES(?, ?, ?)";
 			pstmt = connection.prepareStatement(sql);
 			pstmt.setString(1, playerName);
 			pstmt.setString(2, intervalName);
@@ -90,19 +80,16 @@ public class LogDatabase extends Database {
 		ResultSet rs = null;
 		try {
 			connection = DriverManager.getConnection(this.jdbcConnString);
-			Statement statement = connection.createStatement();
-			statement.setQueryTimeout(30);  // set timeout to 30 seconds
 
 			// Use sqlite's REPLACE
-			String sql = "GET * FROM logs WHERE player=? AND interval=? ORDER BY run_time DESC LIMIT=?";
+			String sql = "SELECT * FROM logs WHERE player=? AND interval=? ORDER BY run_time DESC LIMIT " + limit;
 			pstmt = connection.prepareStatement(sql);
 			pstmt.setString(1, playerName);
-			pstmt.setString(1, interval);
-			pstmt.setInt(2, limit);
+			pstmt.setString(2, interval);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				String intervalName = rs.getString("interval");
-				String lastRun = rs.getString("last_run");
+				String lastRun = rs.getString("run_time");
 				LocalDateTime runTime = LocalDateTime.parse(lastRun, LDT_FORMATTER);
 				list.add(new LogItem(
 					playerName,
@@ -118,6 +105,11 @@ public class LogDatabase extends Database {
 		        	connection.close();
 		        } catch (SQLException e) { /* ignored */}
 		    }
+		    if (pstmt != null) {
+		        try {
+		        	pstmt.close();
+		        } catch (SQLException e) { /* ignored */}
+		    }
 		}
 		return list;
 	}
@@ -129,18 +121,15 @@ public class LogDatabase extends Database {
 		ResultSet rs = null;
 		try {
 			connection = DriverManager.getConnection(this.jdbcConnString);
-			Statement statement = connection.createStatement();
-			statement.setQueryTimeout(30);  // set timeout to 30 seconds
 
 			// Use sqlite's REPLACE
-			String sql = "GET * FROM logs WHERE player=? ORDER BY run_time DESC LIMIT=?";
+			String sql = "SELECT * FROM logs WHERE player=? ORDER BY run_time DESC LIMIT " + limit;
 			pstmt = connection.prepareStatement(sql);
 			pstmt.setString(1, playerName);
-			pstmt.setInt(2, limit);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				String intervalName = rs.getString("interval");
-				String lastRun = rs.getString("last_run");
+				String lastRun = rs.getString("run_time");
 				LocalDateTime runTime = LocalDateTime.parse(lastRun, LDT_FORMATTER);
 				list.add(new LogItem(
 					playerName,
@@ -154,6 +143,11 @@ public class LogDatabase extends Database {
 		    if (connection != null) {
 		        try {
 		        	connection.close();
+		        } catch (SQLException e) { /* ignored */}
+		    }
+		    if (pstmt != null) {
+		        try {
+		        	pstmt.close();
 		        } catch (SQLException e) { /* ignored */}
 		    }
 		}

@@ -1,10 +1,8 @@
 package io.github.mooeypoo.timelyactions.managers;
 
-import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -15,7 +13,8 @@ import io.github.mooeypoo.timelyactions.TimelyActions;
 import io.github.mooeypoo.timelyactions.config.ConfigHandler;
 import io.github.mooeypoo.timelyactions.config.interfaces.IntervalSectionConfigInterface;
 import io.github.mooeypoo.timelyactions.config.interfaces.MainConfigInterface;
-import io.github.mooeypoo.timelyactions.database.Database;
+import io.github.mooeypoo.timelyactions.database.LogDatabase;
+import io.github.mooeypoo.timelyactions.database.RecordsDatabase;
 import io.github.mooeypoo.timelyactions.store.IntervalStore;
 import io.github.mooeypoo.timelyactions.store.PlayerStore;
 import io.github.mooeypoo.timelyactions.store.items.DatabaseItem;
@@ -23,45 +22,52 @@ import io.github.mooeypoo.timelyactions.utils.TimelyLogger;
 import io.github.mooeypoo.timelyactions.utils.ValidityHelper;
 
 public class ProcessManager {
-	private static DateTimeFormatter LDT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 	private TimelyActions plugin;
 	private ConfigHandler config;
 	private IntervalStore intervalStore = new IntervalStore();
 	private PlayerStore playerStore = new PlayerStore();
 	private BukkitTask intervalTask;
-	private Database database;
+	private RecordsDatabase database;
 	private TimelyLogger logger = TimelyLogger.getInstance();
+	private LogDatabase logDB;
+	private Boolean running = false;
 
 	public ProcessManager(TimelyActions plugin) {
 		this.plugin = plugin;
 		this.config = new ConfigHandler(this.plugin);
-		this.database = new Database(this.plugin);
+		this.database = new RecordsDatabase(this.plugin);
+		this.logDB = new LogDatabase(this.plugin);
 	}
 
 	public void initialize() {
 		this.database.initialize();
+		this.logDB.initialize();
 
-		// Load data
-		this.reload();
-		
-		// Get initial values from the db
-		// Skip this for now; we'll gather
-		// the data when players join
-		//		this.loadDataFromDatabase();
-		
+		// Load interval data from config
+		this.reloadIntervalDataFromConfig();
+
 		// Start the task
 		this.startIntervalTask();
+		this.running = true;
 	}
 
 	public void stop() {
 		// Stop the task
 		this.intervalTask.cancel();
+		this.running = false;
 
 		// Save everything to the DB
 		this.saveAllDataToDatabase();
 	}
+	
+	public Boolean isRunning() {
+		return this.running;
+	}
 
-	public void reload() {
+	public Set<String> getIntervalNames() {
+		return this.intervalStore.getIntervalNames();
+	}
+	public void reloadIntervalDataFromConfig() {
 		// Reset data
 		this.intervalStore.reset();
 		this.playerStore.reset();
@@ -153,11 +159,13 @@ public class ProcessManager {
 					diff >= this.intervalStore.getIntervalMinutes(intervalName)
 				) {
 					for (String cmd : this.intervalStore.getIntervalCommands(intervalName)) {
-						// Dispatch commands
-						this.dispatchCommandSync(
-							// Replace placeholders
-							this.replaceStringPlaceholders(cmd, player)
-						);
+						if (!ValidityHelper.isStringEmpty(cmd)) {
+							// Dispatch commands
+							this.dispatchCommandSync(
+								// Replace placeholders
+								this.replaceStringPlaceholders(cmd, player)
+							);
+						}
 					}
 
 					// Send the message to the player
@@ -171,34 +179,21 @@ public class ProcessManager {
 					}
 
 					// Update the interval run datetime for this player
-					this.logger.info(String.format("Invoking actions in interval '%s' for player '%s'", intervalName, player.getName()));
 					this.playerStore.updateIntervalForPlayer(player.getName(), intervalName);
-
 					// TODO: Check if saving to db each time a change occurs is not too expensive
 					// Alternatives are either save only on disable (risky?)
 					// Or have a secondary task that saves all data every 30 minutes
-					this.savePlayerDataToDatabase(player.getName());
+					this.database.savePlayerRecord(
+						player.getName(),
+						intervalName,
+						this.database.getStringFromLocalDate(LocalDateTime.now())
+					);
+					// Add to db log
+					this.logDB.add(player.getName(), intervalName, LocalDateTime.now());
+					this.logger.info(String.format("Invoking actions in interval '%s' for player '%s'", intervalName, player.getName()));
 				}
 			}
 		}
-	}
-	
-	private void loadDataFromDatabase() {
-		// TODO: Potential optimization: only load initial data of online users
-		// So we can potentially only keep relevant players in memory, rather
-		// than all players.
-		ArrayList<DatabaseItem> dataItems = this.database.getAllPlayerRecords();
-		if (dataItems == null || dataItems.isEmpty()) {
-			this.logger.info(String.format("Initial database is empty. Starting from player data."));
-			return;
-		}
-
-		int counter = 0;
-		for (DatabaseItem item : dataItems) {
-			this.loadPlayerDataFromDatabase(item);
-			counter++;
-		}
-		this.logger.info(String.format("Loaded data from database for %d players.", counter));
 	}
 	
 	private void loadPlayerDataFromDatabase(DatabaseItem dataItem) {
@@ -217,7 +212,7 @@ public class ProcessManager {
 			this.savePlayerDataToDatabase(playerName);
 		}
 	}
-	
+
 	private void savePlayerDataToDatabase(String playerName) {
 		for (String intervalName : this.intervalStore.getIntervalNames()) {
 			LocalDateTime lastRun = this.playerStore.getIntervalRecordForPlayer(playerName, intervalName);
@@ -228,7 +223,7 @@ public class ProcessManager {
 			this.database.savePlayerRecord(
 				playerName,
 				intervalName,
-				lastRun.format(LDT_FORMATTER)
+				this.database.getStringFromLocalDate(lastRun)
 			);
 		}
 	}

@@ -6,6 +6,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import io.github.mooeypoo.timelyactions.command.TimelyActionsCommandExecutor;
 import io.github.mooeypoo.timelyactions.managers.ProcessManager;
 import io.github.mooeypoo.timelyactions.utils.TimelyLogger;
 
@@ -14,8 +15,6 @@ public class TimelyActions extends JavaPlugin implements Listener {
 	
 	@Override
 	public void onEnable() {
-		this.getLogger().info("Enabling TimelyActions...");
-
 		TimelyLogger logger = TimelyLogger.getInstance();
 		logger.setPluginLogger(this.getLogger());
 
@@ -27,7 +26,14 @@ public class TimelyActions extends JavaPlugin implements Listener {
 		pm.registerEvents(this, (this));
 		
 		// Start processing
+		this.getLogger().info("Starting timed interval actions...");
 		this.processManager.initialize();
+
+		// Initialize command
+		this.getCommand("timelyactions").setExecutor(new TimelyActionsCommandExecutor(this));
+
+		// TODO: Add commands to reload config
+		// TODO: Add command to stop and restart the task operation
 
 		this.getLogger().info("TimelyActions is enabled.");
 	}
@@ -42,5 +48,9 @@ public class TimelyActions extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		this.processManager.addPlayer(event.getPlayer().getName());
+	}
+	
+	public ProcessManager getProcessManager() {
+		return this.processManager;
 	}
 }

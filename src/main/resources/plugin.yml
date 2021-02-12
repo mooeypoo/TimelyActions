@@ -3,3 +3,17 @@ main: io.github.mooeypoo.timelyactions.TimelyActions
 version: 0.0.1
 description: Run commands on a periodic basis for all your users
 author: mooeypoo
+permissions:
+   timelyactions.cmd.reload:
+      description: This permission allows a user to run the "/playingwithtime restart" command, as well as "/playingwithtime stop" and "/playingwithtime start" commands.
+      default: op
+   timelyactions.cmd.player:
+      description: This permission allows a user to run the "/playingwithtime player" command.
+      default: op
+   timelyactions.cmd.playerinterval:
+      description: This permission allows a user to run the "/playingwithtime playerinterval" command.
+      default: op
+commands:
+   timelyactions:
+      description: Commands triggering actions in TimelyActions plugin.
+      usage: Use `/timelyactions help` to see the list of all available actions. 
