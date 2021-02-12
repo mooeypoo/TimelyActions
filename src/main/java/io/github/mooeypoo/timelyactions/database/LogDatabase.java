@@ -23,13 +23,10 @@ public class LogDatabase extends Database {
 		this.initializeTables(
 			// Create table
 			"CREATE TABLE IF NOT EXISTS `logs` ( "
-				+ "`player` TEXT NOT NULL , "
-				+ "`interval` TEXT NOT NULL , "
-				+ "`run_time` TEXT NULL) ",
-			// Create unique index
-			"CREATE INDEX IF NOT EXISTS "
-			+ "idx_player "
-			+ "ON logs(player)"
+				+ "`player` VARCHAR(255) NOT NULL , "
+				+ "`interval_name` VARCHAR(255) NOT NULL , "
+				+ "`run_time` VARCHAR(255) NULL) ",
+				""
 		);
 	}
 
@@ -43,7 +40,7 @@ public class LogDatabase extends Database {
 			statement.setQueryTimeout(30);  // set timeout to 30 seconds
 
 			// Use sqlite's REPLACE
-			sql = "INSERT INTO logs(player, interval, run_time) VALUES(?, ?, ?)";
+			sql = "INSERT INTO logs(player, interval_name, run_time) VALUES(?, ?, ?)";
 			pstmt = connection.prepareStatement(sql);
 			pstmt.setString(1, playerName);
 			pstmt.setString(2, intervalName);
@@ -82,13 +79,13 @@ public class LogDatabase extends Database {
 			connection = DriverManager.getConnection(this.jdbcConnString);
 
 			// Use sqlite's REPLACE
-			String sql = "SELECT * FROM logs WHERE player=? AND interval=? ORDER BY run_time DESC LIMIT " + limit;
+			String sql = "SELECT * FROM logs WHERE player=? AND interval_name=? ORDER BY run_time DESC LIMIT " + limit;
 			pstmt = connection.prepareStatement(sql);
 			pstmt.setString(1, playerName);
 			pstmt.setString(2, interval);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				String intervalName = rs.getString("interval");
+				String intervalName = rs.getString("interval_name");
 				String lastRun = rs.getString("run_time");
 				LocalDateTime runTime = LocalDateTime.parse(lastRun, LDT_FORMATTER);
 				list.add(new LogItem(
@@ -128,7 +125,7 @@ public class LogDatabase extends Database {
 			pstmt.setString(1, playerName);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				String intervalName = rs.getString("interval");
+				String intervalName = rs.getString("interval_name");
 				String lastRun = rs.getString("run_time");
 				LocalDateTime runTime = LocalDateTime.parse(lastRun, LDT_FORMATTER);
 				list.add(new LogItem(

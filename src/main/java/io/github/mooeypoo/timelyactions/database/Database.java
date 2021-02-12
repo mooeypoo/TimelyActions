@@ -9,6 +9,8 @@ import java.time.format.DateTimeFormatter;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import io.github.mooeypoo.timelyactions.utils.ValidityHelper;
+
 public class Database {
 	protected static DateTimeFormatter LDT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 	protected JavaPlugin plugin;
@@ -17,11 +19,17 @@ public class Database {
 
 	public Database(JavaPlugin plugin) {
 		this.plugin = plugin;
+		
+		try {
+			Class.forName("org.h2.Driver");
+		} catch (ClassNotFoundException e) {
+			this.plugin.getLogger().warning("Could not find org.h2.Driver for database.");
+		}
 	}
 	
 	protected void setFilename(String filename) {
 		this.filename = filename;
-		this.jdbcConnString = "jdbc:sqlite:"+ this.plugin.getDataFolder() +"/" + this.filename;
+		this.jdbcConnString = "jdbc:h2:./"+ this.plugin.getDataFolder() + "/" + this.filename + ";MODE=MYSQL";
 	}
 
 	/**
@@ -40,7 +48,9 @@ public class Database {
 
 			// Create table if they don't exist
 			statement.executeUpdate(createTableSql);
-			statement.executeUpdate(createIndexSql);
+			if (!ValidityHelper.isStringEmpty(createIndexSql)) {
+				statement.executeUpdate(createIndexSql);
+			}
 		} catch (SQLException e) {
 			this.plugin.getLogger().warning(String.format("Error initializing database(%s): %s", this.filename, e.getMessage()));
 		} finally {

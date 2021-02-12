@@ -29,8 +29,8 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 		this.logDB = new LogDatabase(this.plugin);
 		this.recordDB = new RecordsDatabase(this.plugin);
 
-		this.logDB.initialize();
-		this.recordDB.initialize();
+//		this.logDB.initialize();
+//		this.recordDB.initialize();
 		this.generateParameterMap();
 	}
 

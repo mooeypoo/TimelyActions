@@ -24,14 +24,13 @@ public class RecordsDatabase extends Database {
 	public void initialize() {
 		this.initializeTables(
 			// Create table
-			"CREATE TABLE IF NOT EXISTS `player_records` ( "
-				+ "`player` TEXT NOT NULL , "
-				+ "`interval` TEXT NOT NULL , "
-				+ "`last_run` TEXT NULL) ",
-			// Create unique index
-			"CREATE UNIQUE INDEX IF NOT EXISTS "
-			+ "idx_player_interval "
-			+ "ON player_records(player,interval)"
+			"CREATE TABLE IF NOT EXISTS `player_records` ("
+			+ "  `player` varchar(255) NOT NULL,"
+			+ "  `interval_name` varchar(255) NOT NULL,"
+			+ "  `last_run` varchar(255) NOT NULL,"
+			+ "  PRIMARY KEY(`player`,`interval_name`)"
+			+ ")",
+			""
 		);
 	}
 
@@ -51,7 +50,7 @@ public class RecordsDatabase extends Database {
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
-				String intervalName = rs.getString("interval");
+				String intervalName = rs.getString("interval_name");
 				String lastRun = rs.getString("last_run");
 				LocalDateTime lastRunTime = this.getLocalDateFromString(lastRun);
 				return new DatabaseItem(
@@ -87,7 +86,7 @@ public class RecordsDatabase extends Database {
 			);
 			while (rs.next()) {
 				String playerName = rs.getString("player");
-				String intervalName = rs.getString("interval");
+				String intervalName = rs.getString("interval_name");
 				String lastRun = rs.getString("last_run");
 				LocalDateTime lastRunTime = LocalDateTime.parse(lastRun, LDT_FORMATTER);
 				list.add(new DatabaseItem(
@@ -115,15 +114,28 @@ public class RecordsDatabase extends Database {
 		String sql;
 		try {
 			connection = DriverManager.getConnection(this.jdbcConnString);
-			Statement statement = connection.createStatement();
-			statement.setQueryTimeout(30);  // set timeout to 30 seconds
+			sql = "SELECT * FROM player_records WHERE player=? AND interval_name=?";
+			PreparedStatement searchPs = connection.prepareStatement(sql);
+			searchPs.setString(1, playerName);
+			searchPs.setString(2, intervalName);
+			ResultSet rs = searchPs.executeQuery();
+			if (rs.next() == false) {
+				// Record doesn't exist; insert
+				sql = "INSERT INTO player_records(player, interval_name, last_run) VALUES(?, ?, ?)";
+				pstmt = connection.prepareStatement(sql);
+				pstmt.setString(1, playerName);
+				pstmt.setString(2, intervalName);
+				pstmt.setString(3, lastRun);
+			} else {
+				// Record already exists; update
+				sql = "UPDATE player_records SET last_run=? WHERE player=? AND interval_name=?";
+				pstmt = connection.prepareStatement(sql);
+				pstmt.setString(1, lastRun);
+				pstmt.setString(2, playerName);
+				pstmt.setString(3, intervalName);
+			}
 
 			// Use sqlite's REPLACE
-			sql = "REPLACE INTO player_records(player, interval, last_run) VALUES(?, ?, ?)";
-			pstmt = connection.prepareStatement(sql);
-			pstmt.setString(1, playerName);
-			pstmt.setString(2, intervalName);
-			pstmt.setString(3, lastRun);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			this.plugin.getLogger().warning("Error adding player records: " + e.getMessage());
