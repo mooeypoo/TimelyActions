@@ -56,7 +56,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 			this.plugin.getProcessManager().stop();
 			this.logger.outputToPlayerOrConsole("Reloading configuration...", sender);
 			this.plugin.getProcessManager().initialize();
-			this.logger.outputToPlayerOrConsole(String.format("Configuration has reloaded. Timed evaluation running with %d interval(s).", this.plugin.getProcessManager().getIntervalNames().size()), sender);
+			this.logger.outputToPlayerOrConsole(String.format("Configuration reloaded. Timed evaluation running with %d interval(s).", this.plugin.getProcessManager().getIntervalNames().size()), sender);
 		} else if (args[0].equalsIgnoreCase("stop")) {
 			if (!sender.hasPermission("timelyactions.cmd.reload")) {
 				this.logger.outputToPlayerOrConsole("You do not have permission to invoke the stop action.", sender);
