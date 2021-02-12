@@ -45,7 +45,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 			return true;
 		} else if (args[0].equalsIgnoreCase("reload")) {
 			if (!sender.hasPermission("timelyactions.cmd.reload")) {
-				this.logger.outputToPlayerAndConsole("You do not have permission to invoke the reload action.", sender);
+				this.logger.outputToPlayerOrConsole("You do not have permission to invoke the reload action.", sender);
 				return true;
 			}
 			if (!this.plugin.getProcessManager().isRunning()) {
@@ -59,7 +59,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 			this.logger.outputToPlayerOrConsole(String.format("Configuration has reloaded. Timed evaluation running with %d interval(s).", this.plugin.getProcessManager().getIntervalNames().size()), sender);
 		} else if (args[0].equalsIgnoreCase("stop")) {
 			if (!sender.hasPermission("timelyactions.cmd.reload")) {
-				this.logger.outputToPlayerAndConsole("You do not have permission to invoke the stop action.", sender);
+				this.logger.outputToPlayerOrConsole("You do not have permission to invoke the stop action.", sender);
 				return true;
 			}
 			if (!this.plugin.getProcessManager().isRunning()) {
@@ -71,7 +71,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 			this.logger.outputToPlayerOrConsole("Timed evaluation stopped.", sender);
 		} else if (args[0].equalsIgnoreCase("start")) {
 			if (!sender.hasPermission("timelyactions.cmd.reload")) {
-				this.logger.outputToPlayerAndConsole("You do not have permission to invoke the start action.", sender);
+				this.logger.outputToPlayerOrConsole("You do not have permission to invoke the start action.", sender);
 				return true;
 			}
 			if (this.plugin.getProcessManager().isRunning()) {
@@ -83,7 +83,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 			this.logger.outputToPlayerOrConsole("Timed evaluation started.", sender);
 		} else if (args[0].equalsIgnoreCase("player")) {
 			if (!sender.hasPermission("timelyactions.cmd.player")) {
-				this.logger.outputToPlayerAndConsole("You do not have permission to invoke the player action.", sender);
+				this.logger.outputToPlayerOrConsole("You do not have permission to invoke the player action.", sender);
 				return true;
 			}
 			if (args.length < 2 || ValidityHelper.isStringEmpty(args[1])) {
@@ -109,7 +109,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 			this.logger.outputToPlayerOrConsole("To check on a specific interval for the user, use /timelyactions playerinterval [interval]", sender);
 		} else if (args[0].equalsIgnoreCase("playerinterval")) {
 			if (!sender.hasPermission("timelyactions.cmd.playerinterval")) {
-				this.logger.outputToPlayerAndConsole("You do not have permission to invoke the playerinterval action.", sender);
+				this.logger.outputToPlayerOrConsole("You do not have permission to invoke the playerinterval action.", sender);
 				return true;
 			}
 			if (args.length < 3 || ValidityHelper.isStringEmpty(args[1]) || ValidityHelper.isStringEmpty(args[2])) {
@@ -171,8 +171,8 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 		this.paramMap.put("reload", "Reload interval data based on changes to the config.");
 		this.paramMap.put("stop", "Stop the timed process of all intervals.");
 		this.paramMap.put("start", "Start the timed process of all intervals.");
-		this.paramMap.put("player", "Check the logs for the latest intervals the requested player has had run, and their dates and times. Call with /playingwithtime checkplayer [playername]");
-		this.paramMap.put("playerinterval", "Check the logs for a specific interval for the requested user. Call with /playingwithtime checkplayerinterval [playername] [intervalname]");
+		this.paramMap.put("player", "Check the logs for the latest intervals the requested player has had run, and their dates and times. Call with /timelyactions player [playername]");
+		this.paramMap.put("playerinterval", "Check the logs for a specific interval for the requested user. Call with /timelyactions playerinterval [playername] [intervalname]");
 
 	}
 }

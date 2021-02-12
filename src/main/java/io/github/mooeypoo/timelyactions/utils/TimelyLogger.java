@@ -61,7 +61,7 @@ public class TimelyLogger {
 	}
 
 	private void output(String out, CommandSender sender, Boolean sendToBoth) {
-		String formatColor = ChatColor.BLUE + "[PlayingWithTime] " + ChatColor.WHITE + "%s";
+		String formatColor = ChatColor.BLUE + "[TimelyActions] " + ChatColor.WHITE + "%s";
 		String formatBlank = "%s";
 		Boolean inGame = sender instanceof Player;
 		
