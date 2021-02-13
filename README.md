@@ -25,9 +25,6 @@
   <ol>
     <li>
       <a href="#about-timelyactions">About TimelyActions</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
@@ -87,12 +84,12 @@ To change and add your own intervals, you should edit the configuration file `/p
 
 The configuration file allows for several options:
 
-#### log_everything
+#### `log_everything`
 **Default: false**
 
 Enabling this config option will output more information into the console. Use this if you want to verify your plugin operates properly, or if you run into issues, enable this to be able to help with the [bug fix issues](https://github.com/mooeypoo/TimelyActions/issues/new?template=bug_report.md&&labels=bugtitle=%5BBUG%5D+).
 
-#### intervals
+#### `intervals`
 
 This is a list (map) of intervals with key names. The named keys will be used for outputs into the console, and in the commands checking whether players have had the interval run for them.
 
@@ -191,7 +188,7 @@ Similarly to the `player` command this checks the status of a player with a spec
 This can help admins find specific command output in the logs, or make sure players have received certain gifts or actions and when.
 
 
-## Contributingg
+## Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -201,11 +198,11 @@ Contributions are what make the open source community such an amazing place to b
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## Licensee
+## License
 
 Distributed under the GPLv3 License. See `LICENSE` for more information.
 
-## Contactt
+## Contact
 Written and developed by mooeypoo (c) 2020. 
 
 Submit a bug report or hit me up on twitter at [@mooeypoo](https://twitter.com/mooeypoo)
