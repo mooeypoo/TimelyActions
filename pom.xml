@@ -37,7 +37,6 @@
 			        <source>1.8</source>
 			        <target>1.8</target>
 			        <verbose>true</verbose>
-					<!-- release>8</release -->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -142,7 +141,7 @@
 	    <dependency>
 	      <groupId>org.spigotmc</groupId>
 	      <artifactId>spigot-api</artifactId>
-	      <version>1.16.3-R0.1-SNAPSHOT</version>
+	      <version>1.16.5-R0.1-SNAPSHOT</version>
 	      <type>jar</type>
 	      <scope>provided</scope>
 	    </dependency>
