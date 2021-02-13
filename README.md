@@ -52,7 +52,7 @@
 
 ## About TimelyActions
 
-TimelyActions is a Minecraft (Spigot) plugin that enables admins to run groups of commands for players every set minutes. 
+TimelyActions is a Minecraft (Spigot) plugin that enables admins to run groups of commands for players every set minutes.
 
 Users will be eligible for the commands once per defined time period, no matter how many times they rejoin or stay in the server. Optionally base interval actions on user permissions to give different gifts to your users based on their ranks or privileges on the server.
 
@@ -110,7 +110,7 @@ The name `iron_every_5` is defined by the admin when writing the definition, and
 
 **every_minute (default: 60)**
 
-Defines the interval time, in minutes, where players will be eligible to have the actions defined run for them. 
+Defines the interval time, in minutes, where players will be eligible to have the actions defined run for them.
 
 For example, if the value is 60, the system will run the given commands for players at minimum every 60 minutes from the last time the command ran for that player, no matter how many times the player has joined or disconnected.
 
@@ -134,7 +134,7 @@ You can use placeholders in the command text:
 
 ### Example configuration
 
-An example configuration below results in all players being eligible to receive a gift of iron ingot every hour. The command will run for them if they are online, or whenever they join. 
+An example configuration below results in all players being eligible to receive a gift of iron ingot every hour. The command will run for them if they are online, or whenever they join.
 
 ```
 log_everything: false
@@ -189,7 +189,6 @@ Similarly to the `player` command this checks the status of a player with a spec
 
 This can help admins find specific command output in the logs, or make sure players have received certain gifts or actions and when.
 
-
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -205,7 +204,7 @@ Contributions are what make the open source community such an amazing place to b
 Distributed under the GPLv3 License. See `LICENSE` for more information.
 
 ## Contact
-Written and developed by mooeypoo (c) 2020. 
+Written and developed by mooeypoo (c) 2020.
 
 Submit a bug report or hit me up on twitter at [@mooeypoo](https://twitter.com/mooeypoo)
 
