@@ -6,10 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.9.0]
 ### Added
+- Commands: reload, start, stop, player and playerinterval
+- Changed to H2 storage to remove unnecessary 7mb size from jar
 - Add dedicated SQLite action log
 - Added SQLite storage for player->interval state
 - First working prototype
 
-
-[Unreleased]: https://github.com/mooeypoo/ChatMonitor/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/mooeypoo/TimelyActions/compare/v0.9.0...HEAD
+[v0.9.0]: https://github.com/mooeypoo/TimelyActions/releases/tag/v0.9.0
