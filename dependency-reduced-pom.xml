@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.mooeypoo</groupId>
   <artifactId>TimelyActions</artifactId>
-  <name>Command The Time</name>
+  <name>Timely Actions</name>
   <version>0.9.0</version>
   <licenses>
     <license>

@@ -17,6 +17,7 @@ import io.github.mooeypoo.timelyactions.utils.TimelyLogger;
 import io.github.mooeypoo.timelyactions.utils.ValidityHelper;
 
 public class TimelyActionsCommandExecutor implements CommandExecutor {
+	private static Integer DEFAULT_RESULT_LIMIT = 5;
 	private TimelyActions plugin;
 	private HashMap<String, String> paramMap = new HashMap<String, String>();
 	private TimelyLogger logger;
@@ -85,19 +86,29 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 				return true;
 			}
 			if (args.length < 2 || ValidityHelper.isStringEmpty(args[1])) {
-				this.logger.outputToPlayerOrConsole("Missing player name. Usage: /timelyactions player [player name]", sender);
+				this.logger.outputToPlayerOrConsole("Missing player name. Usage: /timelyactions player [player name] [optional: number of results]", sender);
 				return false;
+			}
+			int resultNum = DEFAULT_RESULT_LIMIT;
+			if (args.length == 3) {
+				int numFromString = ValidityHelper.getInt(args[2]);
+				if (numFromString <= 0 || numFromString > 50) {
+					// Invalid
+					this.logger.outputToPlayerOrConsole("Given result number is invalid. Using default (" + DEFAULT_RESULT_LIMIT + ")", sender);
+				} else {
+					resultNum = numFromString;
+				}
 			}
 			
 			String player = args[1];
-			ArrayList<LogItem> results = this.logDB.getLogsForPlayer(player);
+			ArrayList<LogItem> results = this.logDB.getLogsForPlayer(player, resultNum);
 			if (results == null || results.size() == 0) {
 				this.logger.outputToPlayerOrConsole(String.format("No results found for player '%s'", player), sender);
 				return true;
 			}
 			
 			// Show results
-			this.logger.outputToPlayerOrConsole(String.format("Latest 5 intervals processed for player '%s'", player), sender);
+			this.logger.outputToPlayerOrConsole(String.format("Showing %d results for player '%s'", resultNum, player), sender);
 			for (LogItem data : results) {
 				this.logger.outputToPlayerOrConsole(
 					String.format("* [%s] -> Interval '%s'.", data.getRunTime(), data.getInterval()),
@@ -114,19 +125,29 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 				this.logger.outputToPlayerOrConsole("Missing parameter. Usage: /timelyactions playerinterval [player name] [interval name]", sender);
 				return false;
 			}
+			int resultNum = DEFAULT_RESULT_LIMIT;
+			if (args.length == 4) {
+				int numFromString = ValidityHelper.getInt(args[3]);
+				if (numFromString <= 0 || numFromString > 50) {
+					// Invalid
+					this.logger.outputToPlayerOrConsole("Given result number is invalid. Using default (" + DEFAULT_RESULT_LIMIT + ")", sender);
+				} else {
+					resultNum = numFromString;
+				}
+			}
 			
 			String player = args[1];
 			String interval = args[2];
 
 			// Show results
-			ArrayList<LogItem> results = this.logDB.getLogsForPlayerInterval(player, interval);
+			ArrayList<LogItem> results = this.logDB.getLogsForPlayerInterval(player, interval, resultNum);
 			if (results == null || results.size() == 0) {
 				this.logger.outputToPlayerOrConsole(String.format("No results found for interval '%s' for player '%s'", interval, player), sender);
 				return true;
 			}
 
 			// Show results
-			this.logger.outputToPlayerOrConsole(String.format("Latest run times for interval '%s' processed for player '%s'", interval, player), sender);
+			this.logger.outputToPlayerOrConsole(String.format("Showing %d latest run times for interval '%s' for player '%s'", resultNum, interval, player), sender);
 			for (LogItem data : results) {
 				this.logger.outputToPlayerOrConsole(
 					String.format("* [%s] -> Interval '%s'.", data.getRunTime(), data.getInterval()),
@@ -169,7 +190,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 		this.paramMap.put("reload", "Reload interval data based on changes to the config.");
 		this.paramMap.put("stop", "Stop the timed process of all intervals.");
 		this.paramMap.put("start", "Start the timed process of all intervals.");
-		this.paramMap.put("player", "Check the logs for the latest intervals the requested player has had run, and their dates and times. Call with /timelyactions player [playername]");
-		this.paramMap.put("playerinterval", "Check the logs for a specific interval for the requested user. Call with /timelyactions playerinterval [playername] [intervalname]");
+		this.paramMap.put("player", "Check the logs for the latest intervals the requested player has had run, and their dates and times. Call with /timelyactions player [playername] (optional number of results)");
+		this.paramMap.put("playerinterval", "Check the logs for a specific interval for the requested user. Call with /timelyactions playerinterval [playername] [intervalname] (optional number of results)");
 	}
 }
