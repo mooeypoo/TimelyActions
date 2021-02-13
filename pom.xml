@@ -6,7 +6,7 @@
 	  <groupId>io.github.mooeypoo</groupId>
 	  <artifactId>TimelyActions</artifactId>
 	  <version>0.9.0</version>
-	  <name>Command The Time</name>
+	  <name>Timely Actions</name>
 
 	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
