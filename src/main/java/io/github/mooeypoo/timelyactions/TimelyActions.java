@@ -32,9 +32,6 @@ public class TimelyActions extends JavaPlugin implements Listener {
 		// Initialize command
 		this.getCommand("timelyactions").setExecutor(new TimelyActionsCommandExecutor(this));
 
-		// TODO: Add commands to reload config
-		// TODO: Add command to stop and restart the task operation
-
 		this.getLogger().info("TimelyActions is enabled.");
 	}
 

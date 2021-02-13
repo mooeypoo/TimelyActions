@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import io.github.mooeypoo.timelyactions.TimelyActions;
 import io.github.mooeypoo.timelyactions.database.LogDatabase;
 import io.github.mooeypoo.timelyactions.database.LogItem;
-import io.github.mooeypoo.timelyactions.database.RecordsDatabase;
+import io.github.mooeypoo.timelyactions.managers.ProcessManager;
 import io.github.mooeypoo.timelyactions.utils.TimelyLogger;
 import io.github.mooeypoo.timelyactions.utils.ValidityHelper;
 
@@ -21,16 +21,14 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 	private HashMap<String, String> paramMap = new HashMap<String, String>();
 	private TimelyLogger logger;
 	private LogDatabase logDB;
-	private RecordsDatabase recordDB;
+	private ProcessManager manager;
 
 	public TimelyActionsCommandExecutor(TimelyActions plugin) {
 		this.plugin = plugin;
 		this.logger = TimelyLogger.getInstance();
 		this.logDB = new LogDatabase(this.plugin);
-		this.recordDB = new RecordsDatabase(this.plugin);
+		this.manager = this.plugin.getProcessManager();
 
-//		this.logDB.initialize();
-//		this.recordDB.initialize();
 		this.generateParameterMap();
 	}
 
@@ -48,38 +46,38 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 				this.logger.outputToPlayerOrConsole("You do not have permission to invoke the reload action.", sender);
 				return true;
 			}
-			if (!this.plugin.getProcessManager().isRunning()) {
+			if (!this.manager.isRunning()) {
 				this.logger.outputToPlayerOrConsole("Reload is unnecessary if the timed action is not running. Use `/timelyactions start` to restart the process with whatever changes to your config.", sender);
 				return true;
 			}
 			this.logger.outputToPlayerOrConsole("Stopping timed evaluation...", sender);
-			this.plugin.getProcessManager().stop();
+			this.manager.stop();
 			this.logger.outputToPlayerOrConsole("Reloading configuration...", sender);
-			this.plugin.getProcessManager().initialize();
-			this.logger.outputToPlayerOrConsole(String.format("Configuration reloaded. Timed evaluation running with %d interval(s).", this.plugin.getProcessManager().getIntervalNames().size()), sender);
+			this.manager.initialize();
+			this.logger.outputToPlayerOrConsole(String.format("Configuration reloaded. Timed evaluation running with %d interval(s).", this.manager.getIntervalNames().size()), sender);
 		} else if (args[0].equalsIgnoreCase("stop")) {
 			if (!sender.hasPermission("timelyactions.cmd.reload")) {
 				this.logger.outputToPlayerOrConsole("You do not have permission to invoke the stop action.", sender);
 				return true;
 			}
-			if (!this.plugin.getProcessManager().isRunning()) {
+			if (!this.manager.isRunning()) {
 				this.logger.outputToPlayerOrConsole("Timed process is already stopped.", sender);
 				return true;
 			}
 			this.logger.outputToPlayerOrConsole("Stopping timed evaluation...", sender);
-			this.plugin.getProcessManager().stop();
+			this.manager.stop();
 			this.logger.outputToPlayerOrConsole("Timed evaluation stopped.", sender);
 		} else if (args[0].equalsIgnoreCase("start")) {
 			if (!sender.hasPermission("timelyactions.cmd.reload")) {
 				this.logger.outputToPlayerOrConsole("You do not have permission to invoke the start action.", sender);
 				return true;
 			}
-			if (this.plugin.getProcessManager().isRunning()) {
+			if (this.manager.isRunning()) {
 				this.logger.outputToPlayerOrConsole("Timed process is already running.", sender);
 				return true;
 			}
 			this.logger.outputToPlayerOrConsole("Starting timed evaluation...", sender);
-			this.plugin.getProcessManager().initialize();
+			this.manager.initialize();
 			this.logger.outputToPlayerOrConsole("Timed evaluation started.", sender);
 		} else if (args[0].equalsIgnoreCase("player")) {
 			if (!sender.hasPermission("timelyactions.cmd.player")) {
@@ -173,6 +171,5 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 		this.paramMap.put("start", "Start the timed process of all intervals.");
 		this.paramMap.put("player", "Check the logs for the latest intervals the requested player has had run, and their dates and times. Call with /timelyactions player [playername]");
 		this.paramMap.put("playerinterval", "Check the logs for a specific interval for the requested user. Call with /timelyactions playerinterval [playername] [intervalname]");
-
 	}
 }
