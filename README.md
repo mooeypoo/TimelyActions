@@ -190,8 +190,7 @@ Similarly to the `player` command this checks the status of a player with a spec
 
 This can help admins find specific command output in the logs, or make sure players have received certain gifts or actions and when.
 
-
-## Contributingg
+## Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -201,7 +200,7 @@ Contributions are what make the open source community such an amazing place to b
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## Licensee
+## License
 
 Distributed under the GPLv3 License. See `LICENSE` for more information.
 
