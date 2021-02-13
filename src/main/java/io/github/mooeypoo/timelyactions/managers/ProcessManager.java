@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -171,9 +172,10 @@ public class ProcessManager {
 					// Send the message to the player
 					String msg = this.intervalStore.getIntervalUserMessage(intervalName);
 					if (!ValidityHelper.isStringEmpty(msg)) {
+						String colorMessage = ChatColor.translateAlternateColorCodes('&', msg);
 						// this.logger.info(String.format("Interval '%s': Message sent to player '%s'", intervalName, player.getName()));
 						player.sendMessage(this.replaceStringPlaceholders(
-							this.intervalStore.getIntervalUserMessage(intervalName),
+							colorMessage,
 							player
 						));
 					}
@@ -190,7 +192,7 @@ public class ProcessManager {
 					);
 					// Add to db log
 					this.logDB.add(player.getName(), intervalName, LocalDateTime.now());
-					this.logger.info(String.format("Invoking actions in interval '%s' for player '%s'", intervalName, player.getName()));
+					this.logger.info(String.format("Invoking actions in interval '%s' for player '%s'", intervalName, player.getName()), true);
 				}
 			}
 		}
