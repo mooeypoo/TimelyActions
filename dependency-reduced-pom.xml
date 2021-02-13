@@ -26,7 +26,9 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <release>8</release>
+          <source>1.8</source>
+          <target>1.8</target>
+          <verbose>true</verbose>
         </configuration>
       </plugin>
       <plugin>
@@ -150,4 +152,7 @@
       </exclusions>
     </dependency>
   </dependencies>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 </project>
