@@ -115,7 +115,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 					sender
 				);
 			}
-			this.logger.outputToPlayerOrConsole("To check on a specific interval for the user, use /timelyactions playerinterval [interval]", sender);
+			this.logger.outputToPlayerOrConsole("To check on a specific interval for the user, use /timelyactions playerinterval [player name] [interval]", sender);
 		} else if (args[0].equalsIgnoreCase("playerinterval")) {
 			if (!sender.hasPermission("timelyactions.cmd.playerinterval")) {
 				this.logger.outputToPlayerOrConsole("You do not have permission to invoke the playerinterval action.", sender);
@@ -154,7 +154,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 					sender
 				);
 			}
-			this.logger.outputToPlayerOrConsole("To check on a specific interval for the user, use /timelyactions playerinterval [interval]", sender);
+			this.logger.outputToPlayerOrConsole("To check on a specific interval for the user, use /timelyactions playerinterval [player name] [interval]", sender);
 		}
 		
 		return true;
