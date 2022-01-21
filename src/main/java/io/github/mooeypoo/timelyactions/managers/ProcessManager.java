@@ -135,65 +135,74 @@ public class ProcessManager {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			// Make sure player is in store (no-op if the player already exists in store)
 			this.addPlayer(player.getName());
-
-			// Check all intervals
-			for(String intervalName : this.intervalStore.getIntervalNames()) {
-				// Check that the user has matching permissions
+			
+			// Check if the player has the global ignore permission
+			if (player.hasPermission("timelyactions.ignore")) {
+				// Player has global ignore permission, skip to next player
+				continue;
+			}
+			
+			// Go over all intervals
+			for (String intervalName : this.intervalStore.getIntervalNames()) {
+				// Check whether the interval should run for this player
+				
+				// Check first permissions for the player
 				if (!this.intervalStore.doesPlayerHaveIntervalPermission(player, intervalName)) {
-					// User does not have permission
+					// User does not have permissions; skip to next interval
 					// this.logger.info(String.format("Player '%s' skipped for interval '%s': No permission for this interval.", player.getName(), intervalName));
 					continue;
 				}
 				
-				// Check if the user's last-run is outside the interval
+				// Check whether this interval's time is up
 				LocalDateTime lastRunForPlayer = this.playerStore.getIntervalRecordForPlayer(player.getName(), intervalName);
 				long diff = 0;
-				if ( lastRunForPlayer != null ) {
+
+				if (lastRunForPlayer != null) {
+					// Check how long passed
 					Duration duration = Duration.between(LocalDateTime.now(), lastRunForPlayer);					
 					diff = Math.abs(duration.toMinutes());
+					
+					if (diff < this.intervalStore.getIntervalMinutes(intervalName)) {
+						// Not long enough passed; skip to next interval
+						continue;
+					}
+				}
+				
+				// Run all interval commands
+				for (String cmd : this.intervalStore.getIntervalCommands(intervalName)) {
+					if (!ValidityHelper.isStringEmpty(cmd)) {
+						// Dispatch commands
+						this.dispatchCommandSync(
+							// Replace placeholders
+							this.replaceStringPlaceholders(cmd, player)
+						);
+					}
 				}
 
-				if (
-					// Never run before; run it now
-					lastRunForPlayer == null ||
-					// Player's last run of this interval is more minutes than the interval minutes
-					diff >= this.intervalStore.getIntervalMinutes(intervalName)
-				) {
-					for (String cmd : this.intervalStore.getIntervalCommands(intervalName)) {
-						if (!ValidityHelper.isStringEmpty(cmd)) {
-							// Dispatch commands
-							this.dispatchCommandSync(
-								// Replace placeholders
-								this.replaceStringPlaceholders(cmd, player)
-							);
-						}
-					}
-
-					// Send the message to the player
-					String msg = this.intervalStore.getIntervalUserMessage(intervalName);
-					if (!ValidityHelper.isStringEmpty(msg)) {
-						String colorMessage = ChatColor.translateAlternateColorCodes('&', msg);
-						// this.logger.info(String.format("Interval '%s': Message sent to player '%s'", intervalName, player.getName()));
-						player.sendMessage(this.replaceStringPlaceholders(
-							colorMessage,
-							player
-						));
-					}
-
-					// Update the interval run datetime for this player
-					this.playerStore.updateIntervalForPlayer(player.getName(), intervalName);
-					// TODO: Check if saving to db each time a change occurs is not too expensive
-					// Alternatives are either save only on disable (risky?)
-					// Or have a secondary task that saves all data every 30 minutes
-					this.database.savePlayerRecord(
-						player.getName(),
-						intervalName,
-						this.database.getStringFromLocalDate(LocalDateTime.now())
-					);
-					// Add to db log
-					this.logDB.add(player.getName(), intervalName, LocalDateTime.now());
-					this.logger.info(String.format("Invoking actions in interval '%s' for player '%s'", intervalName, player.getName()), true);
+				// Send the message to the player
+				String msg = this.intervalStore.getIntervalUserMessage(intervalName);
+				if (!ValidityHelper.isStringEmpty(msg)) {
+					String colorMessage = ChatColor.translateAlternateColorCodes('&', msg);
+					// this.logger.info(String.format("Interval '%s': Message sent to player '%s'", intervalName, player.getName()));
+					player.sendMessage(this.replaceStringPlaceholders(
+						colorMessage,
+						player
+					));
 				}
+
+				// Update the interval run datetime for this player
+				this.playerStore.updateIntervalForPlayer(player.getName(), intervalName);
+				// TODO: Check if saving to db each time a change occurs is not too expensive
+				// Alternatives are either save only on disable (risky?)
+				// Or have a secondary task that saves all data every 30 minutes
+				this.database.savePlayerRecord(
+					player.getName(),
+					intervalName,
+					this.database.getStringFromLocalDate(LocalDateTime.now())
+				);
+				// Add to db log
+				this.logDB.add(player.getName(), intervalName, LocalDateTime.now());
+				this.logger.info(String.format("Invoking actions in interval '%s' for player '%s'", intervalName, player.getName()), true);
 			}
 		}
 	}

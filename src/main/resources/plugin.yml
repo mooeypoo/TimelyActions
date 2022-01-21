@@ -13,6 +13,9 @@ permissions:
    timelyactions.cmd.playerinterval:
       description: This permission allows a user to run the "/playingwithtime playerinterval" command.
       default: op
+   timelyactions.ignore:
+      description: A player with this permission is skipped from all intervals, regardless of what other permissions they hold
+      default: op
 commands:
    timelyactions:
       description: Commands triggering actions in TimelyActions plugin.

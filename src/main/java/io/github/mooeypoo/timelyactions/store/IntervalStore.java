@@ -65,7 +65,18 @@ public class IntervalStore {
 	public Boolean doesPlayerHaveIntervalPermission(Player player, String name) {
 		IntervalDataItem data = this.store.get(name);
 		
-		if (data == null || ValidityHelper.isStringEmpty(data.getPermission())) {
+		if (data == null) {
+			// Interval doesn't exist
+			return false;
+		}
+
+		if (player.hasPermission("timelyactions.ignore")) {
+			// Player has global ignore permission, skip always
+			return false;
+		}
+		
+		if (ValidityHelper.isStringEmpty(data.getPermission())) {
+			// Permission is empty (= everyone)
 			return true;
 		}
 		return player.hasPermission(data.getPermission());
