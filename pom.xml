@@ -93,6 +93,19 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
                     <version>3.3.0-SNAPSHOT</version>
+                    <configuration>
+                        <!--
+                            The shaded jar isn't meant to be used as a
+                            dependency, no need to create a dependency reduced
+                            pom.
+                        -->
+                        <createDependencyReducedPom>false</createDependencyReducedPom>
+                        <!--
+                            We want to attach the shaded jar, but keep the
+                            original in case it needs to be reused.
+                        -->
+                        <shadedArtifactAttached>true</shadedArtifactAttached>
+                    </configuration>
                     <executions>
                         <execution>
                             <goals>
@@ -111,7 +124,6 @@
                 <artifactId>sortpom-maven-plugin</artifactId>
                 <version>2.12.0</version>
                 <configuration>
-                    <pomFile>./pom.xml</pomFile>
                     <expandEmptyElements>false</expandEmptyElements>
                     <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
                     <sortDependencies>scope,groupId,artifactId</sortDependencies>
