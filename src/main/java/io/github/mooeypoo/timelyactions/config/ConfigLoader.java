@@ -12,7 +12,7 @@ import space.arim.dazzleconf.ext.snakeyaml.SnakeYamlOptions;
 import space.arim.dazzleconf.helper.ConfigurationHelper;
 
 public class ConfigLoader<C> extends ConfigurationHelper<C> {
-	private volatile C configData;
+	private C configData;
 
 	private ConfigLoader(Path configFolder, String fileName, ConfigurationFactory<C> factory) {
 		super(configFolder, fileName, factory);
@@ -27,7 +27,7 @@ public class ConfigLoader<C> extends ConfigurationHelper<C> {
 				SnakeYamlConfigurationFactory.create(configClass, ConfigurationOptions.defaults(), yamlOptions));
 	}
 
-	public void reloadConfig() throws Exception {
+	public synchronized void reloadConfig() throws Exception {
 		try {
 			configData = reloadConfigData();
 		} catch (IOException ex) {
@@ -47,8 +47,7 @@ public class ConfigLoader<C> extends ConfigurationHelper<C> {
 		}
 	}
 
-	public C getConfigData() throws Exception {
-		C configData = this.configData;
+	public synchronized C getConfigData() throws Exception {
 		if (configData == null) {
 			throw new Exception(
 				"Configuration file was not yet loaded."

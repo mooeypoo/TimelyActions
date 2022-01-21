@@ -231,9 +231,10 @@ public class ProcessManager {
 	}
 
 	private void startIntervalTask() {
-    	this.intervalTask = Bukkit.getScheduler().runTaskTimer(this.plugin, () -> {
-    		this.processAllIntervals();
-    	}, 20L * 60, 20L * 30); // Every 1 minute; wait 30 seconds to start
+    	this.intervalTask = Bukkit.getScheduler().runTaskTimer(
+				this.plugin,
+				this::processAllIntervals,
+				20L * 60, 20L * 30); // Every 1 minute; wait 30 seconds to start
     }
 
     /**
