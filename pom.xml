@@ -3,9 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.mooeypoo</groupId>
-    <artifactId>TimelyActions</artifactId>
+    <artifactId>TimelyActions-parent</artifactId>
     <version>1.0.0</version>
-    <name>Timely Actions</name>
+    <packaging>pom</packaging>
+    <name>Timely Actions - parent module</name>
 
     <licenses>
         <license>
@@ -16,6 +17,10 @@
         </license>
     </licenses>
 
+    <modules>
+        <module>TimelyActions</module>
+    </modules>
+
     <properties>
         <dazzleconf.version>1.2.1</dazzleconf.version>
         <maven.compiler.source>17</maven.compiler.source>
@@ -24,33 +29,31 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
-    <dependencies>
-
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-artifact</artifactId>
-            <version>3.6.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>space.arim.dazzleconf</groupId>
-            <artifactId>dazzleconf-core</artifactId>
-            <version>${dazzleconf.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>space.arim.dazzleconf</groupId>
-            <artifactId>dazzleconf-ext-snakeyaml</artifactId>
-            <version>${dazzleconf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.18-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
-    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-artifact</artifactId>
+                <version>3.6.3</version>
+            </dependency>
+            <dependency>
+                <groupId>space.arim.dazzleconf</groupId>
+                <artifactId>dazzleconf-core</artifactId>
+                <version>${dazzleconf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>space.arim.dazzleconf</groupId>
+                <artifactId>dazzleconf-ext-snakeyaml</artifactId>
+                <version>${dazzleconf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.spigotmc</groupId>
+                <artifactId>spigot-api</artifactId>
+                <version>1.18-R0.1-SNAPSHOT</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <repositories>
         <repository>
@@ -73,6 +76,24 @@
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.3.0-SNAPSHOT</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                            <phase>package</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>com.github.ekryd.sortpom</groupId>
@@ -104,27 +125,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.0-SNAPSHOT</version>
-                <configuration>
-                    <relocations>
-                        <relocation>
-                            <pattern>space.arim.dazzleconf</pattern>
-                            <shadedPattern>io.github.mooeypoo.timelyactions.shaded.dazzleconf</shadedPattern>
-                        </relocation>
-                    </relocations>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
             </plugin>
 
             <!-- Used for unit tests -->
