@@ -22,6 +22,32 @@
     </resources>
     <plugins>
       <plugin>
+        <groupId>com.github.ekryd.sortpom</groupId>
+        <artifactId>sortpom-maven-plugin</artifactId>
+        <version>2.12.0</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <pomFile>^pom.xml</pomFile>
+          <expandEmptyElements>false</expandEmptyElements>
+          <predefinedSortOrder>recommended_2008_06</predefinedSortOrder>
+          <sortDependencies>scope,groupId,artifactId</sortDependencies>
+          <sortPlugins>groupId,artifactId</sortPlugins>
+          <lineSeparator>\n</lineSeparator>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <sortProperties>true</sortProperties>
+          <keepBlankLines>true</keepBlankLines>
+          <nrOfIndentSpace>4</nrOfIndentSpace>
+          <verifyFail>Stop</verifyFail>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
       </plugin>
@@ -43,6 +69,18 @@
               <shadedPattern>io.github.mooeypoo.timelyactions.shaded.dazzleconf</shadedPattern>
             </relocation>
           </relocations>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M1</version>
+        <configuration>
+          <testFailureIgnore>true</testFailureIgnore>
+          <argLine>-Xmx1024m -XX:MaxPermSize=256m ${surefireArgLine}</argLine>
+          <skipTests>${skip.unit.tests}</skipTests>
+          <excludes>
+            <exclude>**/IT*.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -72,19 +110,6 @@
             </configuration>
           </execution>
         </executions>
-        <configuration />
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M1</version>
-        <configuration>
-          <testFailureIgnore>true</testFailureIgnore>
-          <argLine>-Xmx1024m -XX:MaxPermSize=256m ${surefireArgLine}</argLine>
-          <skipTests>${skip.unit.tests}</skipTests>
-          <excludes>
-            <exclude>**/IT*.java</exclude>
-          </excludes>
-        </configuration>
       </plugin>
     </plugins>
   </build>
