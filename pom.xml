@@ -19,6 +19,7 @@
 
     <modules>
         <module>TimelyActions</module>
+        <module>TimelyActions-utils</module>
     </modules>
 
     <properties>
@@ -31,6 +32,16 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>io.github.mooeypoo</groupId>
+                <artifactId>TimelyActions</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.mooeypoo</groupId>
+                <artifactId>TimelyActions-utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-artifact</artifactId>
