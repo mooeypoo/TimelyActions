@@ -113,7 +113,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 			this.logger.outputToPlayerOrConsole(String.format("Showing %d results for player '%s'", resultNum, player), sender);
 			for (LogItem data : results) {
 				this.logger.outputToPlayerOrConsole(
-					String.format("* [%s] -> Interval '%s'.", data.getRunTime(), data.getInterval()),
+					String.format("* [%s] -> Interval '%s'.", data.runTime(), data.interval()),
 					sender
 				);
 			}
@@ -152,7 +152,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 			this.logger.outputToPlayerOrConsole(String.format("Showing %d latest run times for interval '%s' for player '%s'", resultNum, interval, player), sender);
 			for (LogItem data : results) {
 				this.logger.outputToPlayerOrConsole(
-					String.format("* [%s] -> Interval '%s'.", data.getRunTime(), data.getInterval()),
+					String.format("* [%s] -> Interval '%s'.", data.runTime(), data.interval()),
 					sender
 				);
 			}
