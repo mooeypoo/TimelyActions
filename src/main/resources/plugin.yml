@@ -5,13 +5,13 @@ description: Run commands on a periodic basis for all your users
 author: mooeypoo
 permissions:
    timelyactions.cmd.reload:
-      description: This permission allows a user to run the "/playingwithtime restart" command, as well as "/playingwithtime stop" and "/playingwithtime start" commands.
+      description: This permission allows a user to run the "/timelyactions restart" command, as well as "/playingwithtime stop" and "/playingwithtime start" commands.
       default: op
    timelyactions.cmd.player:
-      description: This permission allows a user to run the "/playingwithtime player" command.
+      description: This permission allows a user to run the "/timelyactions player" command.
       default: op
    timelyactions.cmd.playerinterval:
-      description: This permission allows a user to run the "/playingwithtime playerinterval" command.
+      description: This permission allows a user to run the "/timelyactions playerinterval" command.
       default: op
    timelyactions.ignore:
       description: A player with this permission is skipped from all intervals, regardless of what other permissions they hold
