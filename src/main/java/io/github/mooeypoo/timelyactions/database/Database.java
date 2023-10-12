@@ -40,10 +40,10 @@ public class Database {
 			return;
 		}
 
-		Connection connection = null;
-		try {
-			connection = DriverManager.getConnection(this.jdbcConnString);
-			Statement statement = connection.createStatement();
+		try (
+				Connection connection = DriverManager.getConnection(this.jdbcConnString);
+				Statement statement = connection.createStatement();
+		) {
 			statement.setQueryTimeout(30);  // set timeout to 30 seconds
 
 			// Create table if they don't exist
@@ -53,12 +53,6 @@ public class Database {
 			}
 		} catch (SQLException e) {
 			this.plugin.getLogger().warning(String.format("Error initializing database(%s): %s", this.filename, e.getMessage()));
-		} finally {
-		    if (connection != null) {
-		        try {
-		        	connection.close();
-		        } catch (SQLException e) { /* ignored */}
-		    }
 		}
 	}
 	

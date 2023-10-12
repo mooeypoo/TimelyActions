@@ -3,9 +3,9 @@ package io.github.mooeypoo.timelyactions.database;
 import java.time.LocalDateTime;
 
 public class LogItem {
-	private String player;
-	private String interval;
-	private LocalDateTime run_time;
+	private final String player;
+	private final String interval;
+	private final LocalDateTime run_time;
 
 	public LogItem(
 		String player,
