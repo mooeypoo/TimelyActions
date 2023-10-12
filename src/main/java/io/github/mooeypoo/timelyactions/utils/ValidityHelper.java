@@ -1,10 +1,17 @@
 package io.github.mooeypoo.timelyactions.utils;
 
+import com.google.common.base.Strings;
+
 import io.github.mooeypoo.timelyactions.config.interfaces.IntervalSectionConfigInterface;
 
 public class ValidityHelper {
+
+	private ValidityHelper() {
+		// utility class should never be contructed.
+	}
+
 	public static Boolean isStringEmpty(String str) {
-		return str == null || str.trim().isEmpty();
+		return str == null || str.isBlank();
 	}
 	
 	public static Boolean isIntervalConfigValid(IntervalSectionConfigInterface intervalData) {
@@ -12,10 +19,7 @@ public class ValidityHelper {
 	}
 
 	/**
-	 * Check if a given string is an integer
-	 * @param s
-	 * @param radix
-	 * @return
+	 * Check if a given string is an integer.
 	 */
 	public static int getInt(String str) {
 		int i;

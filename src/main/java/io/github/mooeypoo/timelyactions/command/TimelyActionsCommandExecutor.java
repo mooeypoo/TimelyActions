@@ -2,6 +2,8 @@ package io.github.mooeypoo.timelyactions.command;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -19,7 +21,7 @@ import io.github.mooeypoo.timelyactions.utils.ValidityHelper;
 public class TimelyActionsCommandExecutor implements CommandExecutor {
 	private static Integer DEFAULT_RESULT_LIMIT = 5;
 	private TimelyActions plugin;
-	private HashMap<String, String> paramMap = new HashMap<String, String>();
+	private HashMap<String, String> paramMap = new HashMap<>();
 	private TimelyLogger logger;
 	private LogDatabase logDB;
 	private ProcessManager manager;
@@ -101,7 +103,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 			}
 			
 			String player = args[1];
-			ArrayList<LogItem> results = this.logDB.getLogsForPlayer(player, resultNum);
+			List<LogItem> results = this.logDB.getLogsForPlayer(player, resultNum);
 			if (results == null || results.size() == 0) {
 				this.logger.outputToPlayerOrConsole(String.format("No results found for player '%s'", player), sender);
 				return true;
@@ -111,7 +113,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 			this.logger.outputToPlayerOrConsole(String.format("Showing %d results for player '%s'", resultNum, player), sender);
 			for (LogItem data : results) {
 				this.logger.outputToPlayerOrConsole(
-					String.format("* [%s] -> Interval '%s'.", data.getRunTime(), data.getInterval()),
+					String.format("* [%s] -> Interval '%s'.", data.runTime(), data.interval()),
 					sender
 				);
 			}
@@ -140,7 +142,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 			String interval = args[2];
 
 			// Show results
-			ArrayList<LogItem> results = this.logDB.getLogsForPlayerInterval(player, interval, resultNum);
+			List<LogItem> results = this.logDB.getLogsForPlayerInterval(player, interval, resultNum);
 			if (results == null || results.size() == 0) {
 				this.logger.outputToPlayerOrConsole(String.format("No results found for interval '%s' for player '%s'", interval, player), sender);
 				return true;
@@ -150,7 +152,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 			this.logger.outputToPlayerOrConsole(String.format("Showing %d latest run times for interval '%s' for player '%s'", resultNum, interval, player), sender);
 			for (LogItem data : results) {
 				this.logger.outputToPlayerOrConsole(
-					String.format("* [%s] -> Interval '%s'.", data.getRunTime(), data.getInterval()),
+					String.format("* [%s] -> Interval '%s'.", data.runTime(), data.interval()),
 					sender
 				);
 			}
@@ -162,7 +164,7 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 
 	private void outputHelp(CommandSender sender) {
 		String output = "";
-		Boolean toPlayer = (sender instanceof Player);
+		boolean toPlayer = (sender instanceof Player);
 		
 		output = "Available actions for the /timelyactions command:";
 		
@@ -175,10 +177,10 @@ public class TimelyActionsCommandExecutor implements CommandExecutor {
 
 		this.logger.outputToPlayerOrConsole("Commands list:", sender);
 
-		for (String param : this.paramMap.keySet()) {
+		for (Map.Entry<String, String> param : this.paramMap.entrySet()) {
 			output = String.format(
-				toPlayer ? "* " + ChatColor.GREEN + "%s" + ChatColor.WHITE + ": %s" : "* %s: %s",
-				param, this.paramMap.get(param)
+					toPlayer ? ("* " + ChatColor.GREEN + "%s" + ChatColor.WHITE + ": %s") : "* %s: %s",
+					param.getKey(), param.getValue()
 			);
 			this.logger.outputToPlayerOrConsole(output, sender);
 		}

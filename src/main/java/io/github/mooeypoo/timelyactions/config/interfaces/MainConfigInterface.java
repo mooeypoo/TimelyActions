@@ -12,7 +12,7 @@ import space.arim.dazzleconf.annote.SubSection;
 
 public interface MainConfigInterface {
 	static Map<String, @SubSection IntervalSectionConfigInterface> sectionsSetDefaults(IntervalSectionConfigInterface defaultGiftsSection) {
-		Map<String, @SubSection IntervalSectionConfigInterface> map = new HashMap<String, @SubSection IntervalSectionConfigInterface>();
+		Map<String, @SubSection IntervalSectionConfigInterface> map = new HashMap<>();
 		map.put("sample_gift", defaultGiftsSection);
 		return map;
 	}

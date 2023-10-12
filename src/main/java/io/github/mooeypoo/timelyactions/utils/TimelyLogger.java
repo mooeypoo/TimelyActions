@@ -33,13 +33,13 @@ public class TimelyLogger {
 		this.info(str, this.showRobust);
 	}
 
-	public void warn(String str, Boolean alwaysOutput) {
+	public void warn(String str, boolean alwaysOutput) {
 		if (alwaysOutput) {
 			this.pluginLogger.warning(str);
 		}
 	}
 
-	public void info(String str, Boolean alwaysOutput) {
+	public void info(String str, boolean alwaysOutput) {
 		if (alwaysOutput) {
 			this.pluginLogger.info(str);
 		}
@@ -60,10 +60,10 @@ public class TimelyLogger {
 		this.output(out, sender, true);
 	}
 
-	private void output(String out, CommandSender sender, Boolean sendToBoth) {
+	private void output(String out, CommandSender sender, boolean sendToBoth) {
 		String formatColor = ChatColor.BLUE + "[TimelyActions] " + ChatColor.WHITE + "%s";
 		String formatBlank = "%s";
-		Boolean inGame = sender instanceof Player;
+		boolean inGame = sender instanceof Player;
 		
 		if (sendToBoth || !inGame) {
 			this.pluginLogger.info(String.format(formatBlank, out));

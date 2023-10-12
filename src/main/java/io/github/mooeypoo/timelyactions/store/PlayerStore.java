@@ -7,9 +7,7 @@ import java.util.Set;
 import io.github.mooeypoo.timelyactions.store.items.PlayerDataItem;
 
 public class PlayerStore {
-	private HashMap<String, PlayerDataItem> store = new HashMap<String, PlayerDataItem>();
-	
-	public PlayerStore() {}
+	private final HashMap<String, PlayerDataItem> store = new HashMap<>();
 
 	public void reset() {
 		// TODO: Store all data in DB

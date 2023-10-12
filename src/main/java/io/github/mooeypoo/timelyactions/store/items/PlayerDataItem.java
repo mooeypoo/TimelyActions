@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class PlayerDataItem {
 	private String playerName;
 	
-	private HashMap<String, LocalDateTime> intervalRecord = new HashMap<String, LocalDateTime>();
+	private HashMap<String, LocalDateTime> intervalRecord = new HashMap<>();
 	
 	public PlayerDataItem(String playerName) {
 		this.playerName = playerName;

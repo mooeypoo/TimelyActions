@@ -1,5 +1,8 @@
 package io.github.mooeypoo.timelyactions.store;
 
+import static java.util.Collections.emptySet;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,10 +13,8 @@ import io.github.mooeypoo.timelyactions.store.items.IntervalDataItem;
 import io.github.mooeypoo.timelyactions.utils.ValidityHelper;
 
 public class IntervalStore {
-	private HashMap<String, IntervalDataItem> store = new HashMap<String, IntervalDataItem>();
+	private final HashMap<String, IntervalDataItem> store = new HashMap<>();
 
-	public IntervalStore() {}
-	
 	public void reset() {
 		this.store.clear();
 	}
@@ -38,7 +39,7 @@ public class IntervalStore {
 	public Set<String> getIntervalCommands(String name) {
 		IntervalDataItem data = this.store.get(name);
 		if (data == null) {
-			return new HashSet<String>();
+			return emptySet();
 		}
 
 		return data.getCommands();

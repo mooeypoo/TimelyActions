@@ -1,6 +1,5 @@
 package io.github.mooeypoo.timelyactions.store.items;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class IntervalDataItem {
@@ -12,7 +11,7 @@ public class IntervalDataItem {
 	
 	private String message_to_user;
 	
-	private Set<String> commands = new HashSet<String>();
+	private Set<String> commands;
 	
 	public IntervalDataItem(
 		String name,
